@@ -7,14 +7,14 @@
 using namespace std;
 
 
-map<char, vector<pair<char, double>>> Graph;
-map<char, bool> Visited;
+map<char, vector<pair<char, double>>> graph; // здесь хранится значение по ключу мы получаем доступ ко всем вершинам, в которые можем попасть из вершины - ключа
+map<char, bool> visited; // список всех уже посещенных вершин
 
 
-char from, to;
+char from, to; // начальная и конечная вершина
 
 
-void readGraph()
+void readGraph() // функция, которая считывает граф и помечает все вершины, как не посещенные
 {
     char start, end;
     double distance;
@@ -27,15 +27,15 @@ void readGraph()
             break;
         cin >> end >> distance;
 
-        Graph[start].push_back(make_pair(end,distance));
-        Graph[end];
-        Visited[start] = false;
-        Visited[end] = false;
+        graph[start].push_back(make_pair(end,distance));
+        graph[end];
+        visited[start] = false;
+        visited[end] = false;
     }
 }
 
 
-void print(stack<char>& result)
+void print(stack<char>& result) // рекурсивная функция, которая раскручивает стек, для получения пути от начально вершины в конечную
 {
     if (result.empty())
         return;
@@ -46,65 +46,66 @@ void print(stack<char>& result)
     cout << tmp;
 }
 
-void greedySearch()
+void greedySearch() // функция, которая реализует жадный поиск
 {
 
-    stack<char> way;
-    stack<char> intermediateDataOutput;
+    stack<char> way; // стек на котором будет хранится путь до текущей вершины
+    stack<char> intermediateDataOutput; // стек для промежуточных данных
 
     way.push(from);
     char currPeak = way.top();
 
     //cout << "Intermediate way: \n";
-    do
+    do // цикл, который работает пока на верху стека не окахется конечная вершина или не будет обойден весь граф
     {
         //intermediateDataOutput = way;
         //print(intermediateDataOutput);
         //cout << "\n";
-        bool anyWay = false;
+        bool anyWay = false; // есть ли из текущей вершины, пути в другие еще не просмотренные верщины
+
         char nextPeak;
         double minDistance;
 
 
-        if (Graph[currPeak].empty())
+        if (graph[currPeak].empty()) // проверка на то, есть ли  пути вообще, если путей нет вершина помечается как посещенная
         {
-            Visited[currPeak] = true;
+            visited[currPeak] = true;
 
             way.pop();
             currPeak = way.top();
             continue;
         }
 
-        for (int i = 0; i < Graph[currPeak].size(); i++)
+        for (int i = 0; i < graph[currPeak].size(); i++) //проверка на, то есть ли еще не посещенные вершины
         {
-            if (!Visited[Graph[currPeak][i].first])
+            if (!visited[graph[currPeak][i].first])
             {
                 anyWay = true;
-                nextPeak = Graph[currPeak][i].first;
-                minDistance = Graph[currPeak][i].second;
+                nextPeak = graph[currPeak][i].first;
+                minDistance = graph[currPeak][i].second;
                 break;
             }
         }
 
-        if (!anyWay)
+        if (!anyWay) // если все вершины уже просмотренные, то вершина помечается как посещенная
         {
-            Visited[currPeak] = true;
+            visited[currPeak] = true;
 
             way.pop();
             currPeak = way.top();
             continue;
         }
 
-        for (int i = 0; i < Graph[currPeak].size(); i++)
+        for (int i = 0; i < graph[currPeak].size(); i++) // поиск самого маленького ребра
         {
-            if (!Visited[Graph[currPeak][i].first] && minDistance > Graph[currPeak][i].second)
+            if (!visited[graph[currPeak][i].first] && minDistance > graph[currPeak][i].second)
             {
-                nextPeak = Graph[currPeak][i].first;
-                minDistance = Graph[currPeak][i].second;
+                nextPeak = graph[currPeak][i].first;
+                minDistance = graph[currPeak][i].second;
             }
         }
 
-        way.push(nextPeak);
+        way.push(nextPeak); //переходим в вершину путь до которой был самый короткий
         currPeak = way.top();
 
     }while (currPeak != to);
