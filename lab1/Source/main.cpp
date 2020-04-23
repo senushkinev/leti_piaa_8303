@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <stack>
 
 using namespace std;
@@ -16,7 +17,7 @@ struct Figure { // структура, которая хранит все дан
     stack <Trio> coordinates;
 } figure;
 
-stack <pair<int, bool>> sizeSquare; // стек, на котором хранится размеры квадратов и был ли он уже поставлен
+stack <pair<int, bool>> sizeSquare; // стек на котором хранятся размеры квадратов,которые могут быть вставлены в точку(координаты точки получаются из структуры Figure) и был ли он уже поставлены в фигуру.
 
 stack <Trio> ansCoordinates; // стек, в котором хранится текущие минимальное разбиение фигуры
 
@@ -28,12 +29,14 @@ void print()
         }
         cout << endl;
     }
+    //getchar();
 }
 
 
-void maxInsert(int x, int y) // функция, которая кладется на стек sizeSquare размер всех квадратов,
-{                            // которые можно вставивть в точку x, y
-    int size;
+void maxInsert(int x, int y)// функции передается точка
+{                           // функия ищет размеры всех квадратов, которые
+    int size;		    // можно вставить в точку и при этом не
+					    // этом не перекрыть другие квадраты, которые 						    //уже стоят в фигуре
     for (size = 1; size <= figure.N - 1; size++)
     {
         if (y + size > figure.N)
@@ -94,10 +97,7 @@ pair<int, int> tiling() // функция, которая перебирает �
                     flag = true;
 
                     if (sizeSquare.top().second)
-                    {
                         maxInsert(x, y);
-                    }
-
 
                     insert(x, y, sizeSquare.top().first, color);
                     figure.coordinates.push(Trio{x, y, sizeSquare.top().first});
@@ -105,8 +105,9 @@ pair<int, int> tiling() // функция, которая перебирает �
 
                     color++;
 
-                    //cout << "Insert"<< endl;
-                    //print();
+                    cout << "Insert a new square into the Figure"<< endl;
+                    print();
+
                     break;
                 }
             }
@@ -116,24 +117,21 @@ pair<int, int> tiling() // функция, которая перебирает �
         // если в фигуру вставленно квадратов больше, чем уже в каком-то из известных разбиений, то происходится откат к другим вариантам разбияния
         if (  color - 1 == numberSquares && figure.delivered != figure.M * figure.N)
         {
-            //cout << "Откат назад, когда уже было вставленно было квадратов" << endl;
+            cout << "More squares than the minimum known partition.Delete squares\n";
             while ( !sizeSquare.empty() && sizeSquare.top().second)
             {
                 sizeSquare.pop();
                 clear(figure.coordinates.top());
                 figure.coordinates.pop();
                 color--;
-                /*
-                cout << "Dell(color - 1 == numberSquares && figure.delivered != figure.M * figure.N)"<< endl;
-                print();
-                 */
+
             }
-            //print();
+            print();
         }
         // если фигура была полность покрыта, тогда проверяется минимальное ли это разбиение, если да, то оно запоминается, если разбиение на столько квадратов уже сущетсвует, то счетчик вариантон разбиение увеличивается
         if ( !sizeSquare.empty() && figure.delivered == figure.M * figure.N)
         {
-            //cout << "Откат назад, когда фигура была полностью закрашена" << endl;
+            cout << "The figure is tiled with the number of squares less than or equal to the current split. Remember the number of squares and delete.\n";
             if (numberSquares == color - 1)
             {
                 numberColorings++;
@@ -150,12 +148,9 @@ pair<int, int> tiling() // функция, которая перебирает �
                 clear(figure.coordinates.top());
                 figure.coordinates.pop();
                 color--;
-                /*
-                cout << "Dell(figure.delivered == figure.M * figure.N)"<< endl;
-                print();
-                 */
             }
-            //print();
+            print();
+
         }
     }while (!sizeSquare.empty());
 
@@ -165,6 +160,7 @@ pair<int, int> tiling() // функция, которая перебирает �
 
 int main() {
     pair <int, int> ans;
+    cout << "Enter the size of the rectangle:\n";
     cin >> figure.N >> figure.M;
 
     if (figure.N > figure.M)
@@ -189,18 +185,12 @@ int main() {
 
     cout << "Minimum number of squares: " << ans.first << endl
          << "Number of minimum constellations: " << ans.second << endl;
-
-    
-
+    cout << "The coordinates of the inserted squares and their size:\n";
     for (int i = 0; i < ans.first; i++)
     {
         cout << ansCoordinates.top().x << ' ' << ansCoordinates.top().y << ' ' << ansCoordinates.top().size << endl;
-        insert(ansCoordinates.top().x, ansCoordinates.top().y, ansCoordinates.top().size, i + 1);
         ansCoordinates.pop();
     }
-
-    //print();
-
 
     return 0;
 }
