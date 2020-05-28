@@ -3,12 +3,14 @@
 #include <string>
 #define DBG
 
-using namespace std;
 
-vector<int> p; // массив для хранения значения префиксфункции искомой подстроки
 
-void prefixFunction(string P) // функция считает префикс функцию от всех префиксов строки и записывет значение для всех префиксов в массив p
+//vector<int> p; // массив для хранения значения префиксфункции искомой подстроки
+
+std::vector<int> prefixFunction(std::string P) // функция считает префикс функцию от всех префиксов строки и записывет значение для всех префиксов в массив p
 {
+    std::vector<int> p;
+    p.resize(P.size() + 1);
     p[0] = 0;
     for (size_t i = 1; i < P.size() + 1; i++)
     {
@@ -22,22 +24,25 @@ void prefixFunction(string P) // функция считает префикс ф
             k++;
         p[i] = k;                       // запоминаем длину прифекс-функции для строки s[0 ... i]
     }
+    return p;
 }
 
 
 
 
-vector<int> KMP(const string& P, const string& T){ // функция ищет все вхождение строки P в строку T и возвращает массив индексов этих вхождений
-    vector<int> ans;
-#ifdef DBG
-    cout << "Prefix function of " << P << " : ";
-    for (size_t i = 0;i < p.size(); i++)
-        cout << p[i] << ' ';
-    cout << endl;
-#endif
+std::vector<int> KMP(const std::string& P, const std::string& T){ // функция ищет все вхождение строки P в строку T и возвращает массив индексов этих вхождений
+    std::vector<int> ans;
+    std::vector<int> p;
 
-    p.resize(P.size() + 1); // нахождение значение префикс-функции
-    prefixFunction(P);              // для всех префиксов строки P
+
+    p = prefixFunction(P);              // для всех префиксов строки P
+
+#ifdef DBG
+    std::cout << "Prefix function of " << P << " : ";
+    for (size_t i = 0;i < p.size(); i++)
+        std::cout << p[i] << ' ';
+    std::cout << std::endl;
+#endif
 
     int k = 0;
     for(size_t i = 0; i < T.size(); i++){  // считаем значение префикс-функции для всех префиксов строки P + T
@@ -50,12 +55,12 @@ vector<int> KMP(const string& P, const string& T){ // функция ищет в
         const std::string green("\033[0;32m");
         const std::string reset("\033[0m");
 
-        cout << "Prefix function of \""
-        << green << P.substr(0, k) << reset
-        << '|' + P.substr(k, P.size()-k) <<
-        "\" and \"" + T.substr(0, i-k+1) + '|'
-        << green << T.substr(i-k+1, k) << reset
-        << "\" = " << k << endl;
+        std::cout << "Prefix function of \""
+             << green << P.substr(0, k) << reset
+             << '|' + P.substr(k, P.size()-k) <<
+             "\" and \"" + T.substr(0, i-k+1) + '|'
+             << green << T.substr(i-k+1, k) << reset
+             << "\" = " << k << std::endl;
 #endif
 
         if (k == P.size())                // если длинна прификс-функции совпало с длинной строки P значит в строке Т была найдена строка Р
@@ -67,21 +72,21 @@ vector<int> KMP(const string& P, const string& T){ // функция ищет в
 
 
 int main(){
-    string P;
-    string T;
+    std::string P;
+    std::string T;
 
-    cin >> P >> T;
+    std::cin >> P >> T;
 
-    vector<int> a = KMP(P, T);
+    std::vector<int> a = KMP(P, T);
 
     if (a.empty()){
-        cout << -1;
+        std::cout << -1;
     }else {
         for(size_t i = 0; i < a.size(); i++) {
-            cout << a[i];
-            if (i + 1 != a.size()) cout << ',';
+            std::cout << a[i];
+            if (i + 1 != a.size()) std::cout << ',';
         }
     }
-    cout << endl;
+    std::cout << std::endl;
     return 0;
 }

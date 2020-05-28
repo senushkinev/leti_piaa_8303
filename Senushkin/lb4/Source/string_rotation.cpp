@@ -3,12 +3,12 @@
 #include <string>
 #define DBG
 
-using namespace std;
 
-vector<int> p; // массив для хранения значения префикс функции искомой подстроки
 
-void prefixFunction(string P) // функция считает префикс функцию от всех префиксов строки и записывет значение для всех префиксов в массив p
+std::vector<int> prefixFunction(std::string P) // функция считает префикс функцию от всех префиксов строки и записывет значение для всех префиксов в массив p
 {
+    std::vector<int> p;
+    p.resize(P.size() + 1);
     p[0] = 0;
     for (size_t i = 1; i < P.size() + 1; i++)
     {
@@ -21,19 +21,20 @@ void prefixFunction(string P) // функция считает префикс ф
             k++;
         p[i] = k;
     }
+    return p;
 }
 
 
-int stringRotation(const string& A, const string& B){
+int stringRotation(const std::string& A, const std::string& B){
 
-    p.resize(B.size() + 1);  // нахождением значение префикс функции
-    prefixFunction(B);               // для всех префиксов строки B
+    std::vector<int> p;
+    p = prefixFunction(B);               // для всех префиксов строки B
 
 #ifdef DBG
-    cout << "Prefix function of " << B << " : ";
+    std::cout << "Prefix function of " << B << " : ";
     for (size_t i = 1;i < p.size(); i++)
-        cout << p[i] << ' ';
-    cout << endl;
+        std::cout << p[i] << ' ';
+    std::cout << std::endl;
 #endif
 
     int k = 0;
@@ -62,15 +63,15 @@ int stringRotation(const string& A, const string& B){
 
 
 int main(){
-    string A;
-    string B;
+    std::string A;
+    std::string B;
 
-    cin >> A >> B;
+    std::cin >> A >> B;
 
     int a = stringRotation(A, B);
 
-    cout << a;
-    cout << endl;
+    std::cout << a;
+    std::cout << std::endl;
     return 0;
 }
 //s d f a s d f
