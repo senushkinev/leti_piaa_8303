@@ -1,0 +1,6 @@
+ATCTATCTA
+4
+ATC
+TCT
+CTA
+TAT    
