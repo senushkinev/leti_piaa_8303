@@ -1,0 +1,1 @@
+g++ -std=c++11 Source/main.cpp -o lb1
