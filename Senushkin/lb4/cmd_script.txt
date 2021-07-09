@@ -1,0 +1,2 @@
+g++ -std=c++14 Source/KMP.cpp -o KMP_Lb4
+g++ -std=c++14 Source/string_rotation.cpp -o string_rotation_Lb4
